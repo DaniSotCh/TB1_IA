@@ -30,11 +30,12 @@ class ProductService:
         tempBasket = basket
         cont = self.priceCalc(tempBasket)
         tempNewBaket = basket
-        while(cont<=cost):
+        while(cont<cost):
             tempBasket.append(self.prodList[randint(0,len(self.prodList)-1)])
             cont = self.priceCalc(tempBasket)
-            if(cont<=cost):
+            if(cont<cost):
                 tempNewBaket=tempBasket
+        tempNewBaket.pop()
         return tempNewBaket
 
     def randomProduct(self):
@@ -82,21 +83,26 @@ class ProductService:
         newBasket = basket
 
         while(temp>1):
+            print("enter--temp")
             productA = self.randomProduct()
             productB = self.randomProduct()
-
-            iNewBasket1 = randint(0, len(newBasket)-1)
-            iNewBasket2 = randint(0, len(newBasket)-1)
+            
             tempBasket=newBasket
-            while(self.priceCalc(newBasket)<=cost):
+            while(self.priceCalc(newBasket)<cost):
+                iNewBasket1 = randint(0, len(newBasket)-1)
+                iNewBasket2 = randint(0, len(newBasket)-1)
+                productA = self.randomProduct()
+                productB = self.randomProduct()
                 while(iNewBasket1==iNewBasket2):
                     iNewBasket2 = randint(0, len(newBasket)-1)
                 newBasket[iNewBasket1] = productA
                 newBasket[iNewBasket2] = productB
-                if(self.priceCalc(newBasket)<=tempBasket):
+                
+                if(self.priceCalc(newBasket)<cost):
                     tempBasket=newBasket
+                    break
             newBasket=tempBasket
-
+            newBasket.pop()
             newBasket= self.addRandomProducts(cost, newBasket)
 
             eProteinsActual = self.priceCalc(actualBasket)
@@ -133,19 +139,26 @@ class ProductService:
         betterBasket = basket
         newBasket = basket
         while(temp>1):
+            print("enter--temp")
             productA = self.randomProduct()
             productB = self.randomProduct()
-            iNewBasket1 = randint(0, len(newBasket)-1)
-            iNewBasket2 = randint(0, len(newBasket)-1)
-            tempBasket=[]
-            while(self.priceCalc(newBasket)<=cost):
+            
+            tempBasket=newBasket
+            while(self.priceCalc(newBasket)<cost):
+                iNewBasket1 = randint(0, len(newBasket)-1)
+                iNewBasket2 = randint(0, len(newBasket)-1)
+                productA = self.randomProduct()
+                productB = self.randomProduct()
                 while(iNewBasket1==iNewBasket2):
                     iNewBasket2 = randint(0, len(newBasket)-1)
                 newBasket[iNewBasket1] = productA
                 newBasket[iNewBasket2] = productB
-                if(self.priceCalc(newBasket)<=tempBasket):
+                
+                if(self.priceCalc(newBasket)<cost):
                     tempBasket=newBasket
+                    break
             newBasket=tempBasket
+            newBasket.pop()
             newBasket= self.addRandomProducts(cost, newBasket)
 
             eFatActual = self.fatCalc(actualBasket)
@@ -178,19 +191,26 @@ class ProductService:
         betterBasket = basket
         newBasket = basket
         while(temp>1):
+            print("enter--temp")
             productA = self.randomProduct()
             productB = self.randomProduct()
-            iNewBasket1 = randint(0, len(newBasket)-1)
-            iNewBasket2 = randint(0, len(newBasket)-1)
-            tempBasket=[]
-            while(self.priceCalc(newBasket)<=cost):
+            
+            tempBasket=newBasket
+            while(self.priceCalc(newBasket)<cost):
+                iNewBasket1 = randint(0, len(newBasket)-1)
+                iNewBasket2 = randint(0, len(newBasket)-1)
+                productA = self.randomProduct()
+                productB = self.randomProduct()
                 while(iNewBasket1==iNewBasket2):
                     iNewBasket2 = randint(0, len(newBasket)-1)
                 newBasket[iNewBasket1] = productA
                 newBasket[iNewBasket2] = productB
-                if(self.priceCalc(newBasket)<=tempBasket):
+                
+                if(self.priceCalc(newBasket)<cost):
                     tempBasket=newBasket
+                    break
             newBasket=tempBasket
+            newBasket.pop()
             newBasket= self.addRandomProducts(cost, newBasket)
 
             #+proteins +carbs +weight
@@ -223,8 +243,6 @@ class ProductService:
         temp = 10000
         basket = []
         basket = self.addRandomProducts(cost, basket)
-        print("----cost------ ",cost)
-        print("----aia------ ",self.priceCalc(basket))
         betterBasket = []
 
         #Normal : +proteins +calories +weight
@@ -242,16 +260,29 @@ class ProductService:
         totalCost = self.priceCalc(betterBasket)
         totalCount = len(betterBasket)
         listBetterBasket =[]
+        namesInBasket = []
+        numberInList = []
         for i in betterBasket:
-            listBetterBasket.append({
-                'Name': i.name,
-                'Price(s/.)': i.price,
-                'Weight(1-5)': i.weight,
-                'Calories(kcal)': i.calories,
-                'Fat(g)': i.fat,
-                'Carbs(g)': i.carbs,
-                'Protein(g)': i.protein
-            })
+
+            if(i.name not in namesInBasket):
+                namesInBasket.append(i.name)
+                numberInList.append(1)
+            else:
+                numberInList[namesInBasket.index(i.name)]+=1
+        namesInBasketNew = []
+        for i in betterBasket:
+            if(i.name not in namesInBasketNew):
+                namesInBasketNew.append(i.name)
+                listBetterBasket.append({
+                    'Cantidad': numberInList[namesInBasket.index(i.name)],
+                    'Name': i.name,
+                    'Price(s/.)': i.price,
+                    'Weight(1-5)': i.weight,
+                    'Calories(kcal)': i.calories,
+                    'Fat(g)': i.fat,
+                    'Carbs(g)': i.carbs,
+                    'Protein(g)': i.protein
+                })
         result = {
             'totalCost': totalCost,
             'totalCount': totalCount,
